@@ -1,0 +1,199 @@
+Strategy for the Dashboard
+
+Centralized Database Access
+
+Use your MySQL database vyrade_post_logs with the three tables:
+
+brands → brand info
+
+social_instagram_tiktok → Instagram/TikTok automation logs
+
+social_linkedin_twitter → LinkedIn/Twitter automation logs
+
+Connect to this database directly from your Vibe dashboard app.
+
+Data Aggregation
+
+Aggregate data from both automation workflows.
+
+Show:
+
+Number of posts per brand
+
+Number of posts per platform (Instagram, TikTok, LinkedIn, Twitter)
+
+Weekly and monthly statistics
+
+Status breakdown (Published / Failed)
+
+Remove drafts and scheduled posts from the view (only show published).
+
+Dashboard Components
+
+Sidebar Navigation (ShadCN UI theme):
+
+Dashboard Overview
+
+Instagram/TikTok Logs
+
+LinkedIn/Twitter Logs
+
+Brands
+
+Filters:
+
+By brand
+
+By week / month
+
+By platform
+
+Main Dashboard Widgets:
+
+Total posts
+
+Posts per platform
+
+Posts per brand
+
+Status charts
+
+Latest posts table with CRUD operations
+
+Tables & CRUD
+
+Brands Table
+
+Fields: id, brand_name
+
+Operations: Create, Read, Update, Delete
+
+Social Logs Table
+
+Fields from social_instagram_tiktok & social_linkedin_twitter
+
+CRUD: Update content, status; Delete incorrect entries; Add new logs manually
+
+Charts / Data Visualization
+
+Bar chart: Posts per brand
+
+Line chart: Weekly / monthly posts trend
+
+Pie chart: Platform-wise post distribution
+
+Integration with n8n
+
+Dashboard reads from the same MySQL database your n8n workflows are writing into.
+
+Automatic live updates from workflows (no need to duplicate data).
+
+Filtering allows you to check how much content was published, on which brand, on which platform, weekly/monthly.
+
+Detailed Prompt for Vibe + ShadCN UI
+
+Front-end: ShadCN UI, White theme
+Backend: MySQL (Your DB credentials)
+Features: CRUD, Filters (weekly/monthly/brand), Charts, Sidebar, Logs
+
+// Dashboard Config (Vibe coding prompt style)
+
+{
+  "app_name": "Social Media Central Dashboard",
+  "theme": "ShadCN UI - White",
+  "database": {
+    "type": "mysql",
+    "host": "148.163.69.162",
+    "username": "vyrade_post_logs",
+    "password": "y,EzwtE)}ydd2Atg",
+    "port": 3306,
+    "database": "vyrade_post_logs"
+  },
+  "tables": [
+    {
+      "name": "brands",
+      "fields": ["id", "brand_name"],
+      "crud": true
+    },
+    {
+      "name": "social_instagram_tiktok",
+      "fields": ["ID", "Brand", "Generated_Reel_Video", "Instagram_Content", "Tiktok_Content", "Status"],
+      "crud": true
+    },
+    {
+      "name": "social_linkedin_twitter",
+      "fields": ["id", "Brand", "Twitter_Content", "LinkedIn_Content", "Date_Posted", "Status"],
+      "crud": true
+    }
+  ],
+  "sidebar": [
+    "Dashboard Overview",
+    "Instagram/TikTok Logs",
+    "LinkedIn/Twitter Logs",
+    "Brands"
+  ],
+  "filters": [
+    {"name": "Brand", "type": "dropdown", "source": "brands"},
+    {"name": "Date Range", "type": "weekly/monthly"},
+    {"name": "Platform", "type": "dropdown", "options": ["Instagram","TikTok","LinkedIn","Twitter"]}
+  ],
+  "dashboard_components": [
+    {
+      "type": "cards",
+      "cards": [
+        {"title": "Total Posts", "data_source": "count_all_posts"},
+        {"title": "Instagram Posts", "data_source": "count_instagram"},
+        {"title": "TikTok Posts", "data_source": "count_tiktok"},
+        {"title": "LinkedIn Posts", "data_source": "count_linkedin"},
+        {"title": "Twitter Posts", "data_source": "count_twitter"}
+      ]
+    },
+    {
+      "type": "charts",
+      "charts": [
+        {"type": "bar", "title": "Posts per Brand", "data_source": "brand_post_count"},
+        {"type": "line", "title": "Posts Trend", "data_source": "weekly_monthly_trend"},
+        {"type": "pie", "title": "Platform Distribution", "data_source": "platform_post_count"}
+      ]
+    },
+    {
+      "type": "tables",
+      "tables": [
+        {
+          "title": "Latest Instagram/TikTok Posts",
+          "data_source": "social_instagram_tiktok",
+          "fields": ["ID", "Brand", "Generated_Reel_Video", "Instagram_Content", "Tiktok_Content", "Status"],
+          "crud": true
+        },
+        {
+          "title": "Latest LinkedIn/Twitter Posts",
+          "data_source": "social_linkedin_twitter",
+          "fields": ["id", "Brand", "Twitter_Content", "LinkedIn_Content", "Date_Posted", "Status"],
+          "crud": true
+        }
+      ]
+    }
+  ],
+  "features": [
+    "Live data from MySQL",
+    "Filters by brand, platform, weekly/monthly",
+    "CRUD operations for all tables",
+    "Charts for quick insights",
+    "Sidebar navigation"
+  ]
+}
+
+
+✅ Notes / Recommendations:
+
+Only fetch published posts, exclude drafts or scheduled posts.
+
+CRUD should be directly reflected in MySQL.
+
+Sidebar makes it easy to navigate between Instagram/TikTok and LinkedIn/Twitter logs.
+
+Filters allow you to slice data brand-wise, platform-wise, or time-wise.
+
+Charts give a quick overview of publishing activity.
+
+The design will follow ShadCN UI White theme for a clean, modern look.

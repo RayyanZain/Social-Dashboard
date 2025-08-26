@@ -1,0 +1,128 @@
+please integrate my database of my sql:
+"database": {
+    "type": "mysql",
+    "host": "148.163.69.162",
+    "username": "vyrade_post_logs",
+    "password": "y,EzwtE)}ydd2Atg",
+    "port": 3306,
+    "database": "vyrade_post_logs",
+
+thats my db stcutre:
+/*Table: brands*/
+-----------------
+
+/*Column Information*/
+----------------------
+
+Field       Type          Collation          Null    Key     Default              Extra   Privileges                       Comment  
+----------  ------------  -----------------  ------  ------  -------------------  ------  -------------------------------  ---------
+id          char(36)      latin1_swedish_ci  NO      PRI     (NULL)                       select,insert,update,references           
+name        varchar(255)  latin1_swedish_ci  NO              (NULL)                       select,insert,update,references           
+created_at  timestamp     (NULL)             NO              current_timestamp()          select,insert,update,references           
+
+/*Index Information*/
+---------------------
+
+Table   Non_unique  Key_name  Seq_in_index  Column_name  Collation  Cardinality  Sub_part  Packed  Null    Index_type  Comment  Index_comment  Ignored  
+------  ----------  --------  ------------  -----------  ---------  -----------  --------  ------  ------  ----------  -------  -------------  ---------
+brands           0  PRIMARY              1  id           A                    9    (NULL)  (NULL)          BTREE                               NO       
+
+/*DDL Information*/
+-------------------
+
+CREATE TABLE `brands` (
+  `id` char(36) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci
+
+
+
+
+
+
+/*Table: social_instagram_tiktok*/
+----------------------------------
+
+/*Column Information*/
+----------------------
+
+Field                 Type                                            Collation          Null    Key     Default              Extra                          Privileges                       Comment  
+--------------------  ----------------------------------------------  -----------------  ------  ------  -------------------  -----------------------------  -------------------------------  ---------
+id                    char(36)                                        latin1_swedish_ci  NO      PRI     (NULL)                                              select,insert,update,references           
+brand_id              char(36)                                        latin1_swedish_ci  NO      MUL     (NULL)                                              select,insert,update,references           
+generated_reel_video  text                                            latin1_swedish_ci  YES             (NULL)                                              select,insert,update,references           
+instagram_content     text                                            latin1_swedish_ci  YES             (NULL)                                              select,insert,update,references           
+tiktok_content        text                                            latin1_swedish_ci  YES             (NULL)                                              select,insert,update,references           
+status                enum('published','scheduled','draft','failed')  latin1_swedish_ci  YES             draft                                               select,insert,update,references           
+created_at            timestamp                                       (NULL)             NO              current_timestamp()                                 select,insert,update,references           
+updated_at            timestamp                                       (NULL)             NO              current_timestamp()  on update current_timestamp()  select,insert,update,references           
+
+/*Index Information*/
+---------------------
+
+Table                    Non_unique  Key_name                          Seq_in_index  Column_name  Collation  Cardinality  Sub_part  Packed  Null    Index_type  Comment  Index_comment  Ignored  
+-----------------------  ----------  --------------------------------  ------------  -----------  ---------  -----------  --------  ------  ------  ----------  -------  -------------  ---------
+social_instagram_tiktok           0  PRIMARY                                      1  id           A                    9    (NULL)  (NULL)          BTREE                               NO       
+social_instagram_tiktok           1  fk_social_instagram_tiktok_brand             1  brand_id     A                    9    (NULL)  (NULL)          BTREE                               NO       
+
+/*DDL Information*/
+-------------------
+
+CREATE TABLE `social_instagram_tiktok` (
+  `id` char(36) NOT NULL,
+  `brand_id` char(36) NOT NULL,
+  `generated_reel_video` text DEFAULT NULL,
+  `instagram_content` text DEFAULT NULL,
+  `tiktok_content` text DEFAULT NULL,
+  `status` enum('published','scheduled','draft','failed') DEFAULT 'draft',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `fk_social_instagram_tiktok_brand` (`brand_id`),
+  CONSTRAINT `fk_social_instagram_tiktok_brand` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci
+
+
+*Table: social_linkedin_twitter*/
+----------------------------------
+
+/*Column Information*/
+----------------------
+
+Field             Type                                            Collation          Null    Key     Default              Extra                          Privileges                       Comment  
+----------------  ----------------------------------------------  -----------------  ------  ------  -------------------  -----------------------------  -------------------------------  ---------
+id                char(36)                                        latin1_swedish_ci  NO      PRI     (NULL)                                              select,insert,update,references           
+brand_id          char(36)                                        latin1_swedish_ci  NO      MUL     (NULL)                                              select,insert,update,references           
+twitter_content   text                                            latin1_swedish_ci  YES             (NULL)                                              select,insert,update,references           
+linkedin_content  text                                            latin1_swedish_ci  YES             (NULL)                                              select,insert,update,references           
+date_posted       timestamp                                       (NULL)             YES             (NULL)                                              select,insert,update,references           
+status            enum('published','scheduled','draft','failed')  latin1_swedish_ci  YES             draft                                               select,insert,update,references           
+created_at        timestamp                                       (NULL)             NO              current_timestamp()                                 select,insert,update,references           
+updated_at        timestamp                                       (NULL)             NO              current_timestamp()  on update current_timestamp()  select,insert,update,references           
+
+/*Index Information*/
+---------------------
+
+Table                    Non_unique  Key_name                          Seq_in_index  Column_name  Collation  Cardinality  Sub_part  Packed  Null    Index_type  Comment  Index_comment  Ignored  
+-----------------------  ----------  --------------------------------  ------------  -----------  ---------  -----------  --------  ------  ------  ----------  -------  -------------  ---------
+social_linkedin_twitter           0  PRIMARY                                      1  id           A                   10    (NULL)  (NULL)          BTREE                               NO       
+social_linkedin_twitter           1  fk_social_linkedin_twitter_brand             1  brand_id     A                   10    (NULL)  (NULL)          BTREE                               NO       
+
+/*DDL Information*/
+-------------------
+
+CREATE TABLE `social_linkedin_twitter` (
+  `id` char(36) NOT NULL,
+  `brand_id` char(36) NOT NULL,
+  `twitter_content` text DEFAULT NULL,
+  `linkedin_content` text DEFAULT NULL,
+  `date_posted` timestamp NULL DEFAULT NULL,
+  `status` enum('published','scheduled','draft','failed') DEFAULT 'draft',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `fk_social_linkedin_twitter_brand` (`brand_id`),
+  CONSTRAINT `fk_social_linkedin_twitter_brand` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci
